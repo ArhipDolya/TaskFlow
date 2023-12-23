@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,10 +27,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'auth',
+    'authentication',
     'tasks',
 
-    'rest-framework',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -47,7 +48,7 @@ ROOT_URLCONF = 'TaskFlow.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR, 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,11 +67,31 @@ WSGI_APPLICATION = 'TaskFlow.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+      'ENGINE': 'djongo',
+      'NAME': 'mydatabase',
+      'CLIENT': {
+        'host': os.environ.get('MONGO_HOST', 'mongodb://mongodb:27017'),
+        'username': os.environ.get('MONGO_INITDB_ROOT_USERNAME', 'root'),
+        'password': os.environ.get('MONGO_INITDB_ROOT_PASSWORD', 'password'),
+        'authSource': str(os.environ.get('MONGO_AUTH_SOURCE', 'admin')),
+        'authMechanism': os.environ.get('MONGO_AUTH_MECHANISM', 'SCRAM-SHA-1'),
+      }
+  }
+}
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'elasticsearch:9200'
+    },
 }
 
 
