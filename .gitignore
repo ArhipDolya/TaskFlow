@@ -1,3 +1,5 @@
 .env
 data-db
 data-mongodb
+data-mongodb/diagnostic.data
+data-mongodb/diagnostic.data/metrics.interim/
