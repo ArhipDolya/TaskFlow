@@ -31,7 +31,9 @@ INSTALLED_APPS = [
     'tasks',
 
     'rest_framework',
+    'graphene_django',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

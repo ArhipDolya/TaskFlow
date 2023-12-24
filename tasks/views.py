@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from graphene_django.views import GraphQLView
+#from ..schema import schema
+#
+#
+#class PrivateGraphQLView(GraphQLView):
+#    schema = schema
 
-# Create your views here.
