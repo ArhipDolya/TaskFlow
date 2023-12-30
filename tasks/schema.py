@@ -24,17 +24,20 @@ class CreateTaskMutation(graphene.Mutation):
 class UpdateTaskMutation(graphene.Mutation):
     class Arguments:
         id = graphene.ID(required=True)
-        title = graphene.String(required=True)
+        title = graphene.String(required=False)
         description = graphene.String(required=False)
+        completed = graphene.Boolean(required=False)
 
     task = graphene.Field(TasksType)
 
-    def mutate(self, info, id, title=None, description=None):
+    def mutate(self, info, id, title=None, description=None, completed=None):
         task = Task.objects.get(id=id)
         if title is not None:
             task.title = title
         if description is not None:
             task.description = description
+        if completed is not None:
+            task.completed = completed
 
         task.save()
         return UpdateTaskMutation(task=task)

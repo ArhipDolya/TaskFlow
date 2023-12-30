@@ -1,5 +1,11 @@
 import os
+import django
 from pathlib import Path
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
+
+
+django.utils.translation.ugettext = gettext
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +38,9 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'graphene_django',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'graphql_auth',
+    'django_filters',
 ]
 
 
@@ -69,17 +78,10 @@ WSGI_APPLICATION = 'TaskFlow.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
       'ENGINE': 'djongo',
-      'NAME': 'mydatabase',
+      'NAME': 'mydatabase2',
       'CLIENT': {
         'host': os.environ.get('MONGO_HOST', 'mongodb://mongodb:27017'),
         'username': os.environ.get('MONGO_INITDB_ROOT_USERNAME', 'root'),
@@ -88,12 +90,6 @@ DATABASES = {
         'authMechanism': os.environ.get('MONGO_AUTH_MECHANISM', 'SCRAM-SHA-1'),
       }
   }
-}
-
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'elasticsearch:9200'
-    },
 }
 
 
@@ -137,3 +133,27 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+AUTH_USER_MODEL = 'authentication.User'
+
+GRAPHENE = {
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_auth.backends.GraphQLAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+GRAPHQL_JWT = {
+    "JWT_ALLOW_ANY_CLASSES": [
+        'graphql_auth.mutations.Register',
+    ],
+    'JWT_VERIFY_EXPIRATION': True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
